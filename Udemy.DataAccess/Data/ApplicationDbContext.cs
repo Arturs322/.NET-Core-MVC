@@ -19,7 +19,7 @@ namespace Udemy.DataAccess.Data
                 new Category { Id = 3, Name = "Comedy", DisplayOrder = 3 }
             );       
             
-            modelBuilder.Entity<>().HasData(
+            modelBuilder.Entity<Product>().HasData(
                 new Product
                 {
                     Id = 1,
