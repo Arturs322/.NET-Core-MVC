@@ -11,11 +11,13 @@ namespace UdemyCourse.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public ProductController(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
-        public IActionResult Index()
+        public IActionResult Index() 
         {
             List<Product> objProductList = _unitOfWork.Product.GetAll().ToList();
             return View(objProductList);
@@ -25,10 +27,10 @@ namespace UdemyCourse.Areas.Admin.Controllers
             ProductVM productVM = new()
             {
                 CategoryList = _unitOfWork.
-            Category.GetAll().Select(u => new SelectListItem
-             {
-                Text = u.Name,
-                Value = u.Id.ToString(),
+                Category.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString(),
                 }),
                 Product = new Product()
             };
@@ -36,7 +38,7 @@ namespace UdemyCourse.Areas.Admin.Controllers
             {
                 //create
                 return View(productVM);
-        }
+            }
             else
             {
                 //update
@@ -46,47 +48,48 @@ namespace UdemyCourse.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Product obj)
+        public IActionResult Upsert(ProductVM productVM, IFormFile? file)
         {
-            if (obj.Title == "test")
+            if (productVM.Product.Title == "test")
             {
                 ModelState.AddModelError("Title", "Title can not be test");
             }
 
             if (ModelState.IsValid)
             {
-                _unitOfWork.Product.Add(obj);
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if(file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string productPath = Path.Combine(wwwRootPath, @"images\product");
+
+                    if(!string.IsNullOrEmpty(productVM.Product.imageUrl)) 
+                    { 
+                        var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.imageUrl.TrimStart('\\'));
+
+                        if(System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+                    using ( var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                    productVM.Product.imageUrl = @"\images\product\" + fileName;
+                }
+
+                if(productVM.Product.Id == 0)
+                {
+                    _unitOfWork.Product.Add(productVM.Product);
+
+                } else
+                {
+                    _unitOfWork.Product.Update(productVM.Product);
+                }
+
                 _unitOfWork.Save();
                 TempData["success"] = "Product created successfully!";
-                return RedirectToAction("Index");
-            }
-            return View();
-        }
-
-        public IActionResult Edit(int? id)
-        {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-            Product? productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
-            //Category? categoryFromDb1 = _db.Categories.FirstOrDefault(u => u.Id == id);
-            //Category? categoryFromDb2 = _db.Categories.Where(u => u.Id == id).FirstOrDefault();
-            if (productFromDb == null)
-            {
-                return NotFound();
-            }
-            return View(productFromDb);
-        }
-
-        [HttpPost]
-        public IActionResult Edit(Product obj)
-        {
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Product.Update(obj);
-                _unitOfWork.Save();
-                TempData["success"] = "Product updated successfully!";
                 return RedirectToAction("Index");
             } else
             {
@@ -96,8 +99,8 @@ namespace UdemyCourse.Areas.Admin.Controllers
                         Text = u.Name,
                         Value = u.Id.ToString(),
                     });
-            }
-            return View();
+                }
+            return View(productVM);
         }
 
         public IActionResult Delete(int? id)
