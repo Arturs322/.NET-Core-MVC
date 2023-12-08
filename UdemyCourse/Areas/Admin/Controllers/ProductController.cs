@@ -19,7 +19,7 @@ namespace UdemyCourse.Areas.Admin.Controllers
         }
         public IActionResult Index() 
         {
-            List<Product> objProductList = _unitOfWork.Product.GetAll().ToList();
+            List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
             return View(objProductList);
         }
         public IActionResult Upsert(int? id)
@@ -94,7 +94,7 @@ namespace UdemyCourse.Areas.Admin.Controllers
             } else
             {
                 productVM.CategoryList = _unitOfWork.
-                    Category.GetAll().Select(u => new SelectListItem
+                    Category.GetAll(includeProperties: "Category").Select(u => new SelectListItem
                     {
                         Text = u.Name,
                         Value = u.Id.ToString(),
