@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using Udemy.DataAccess.Repository.IRepository;
 using Udemy.Models;
+using Udemy.Models.ViewModels;
 
 namespace UdemyCourse.Areas.Admin.Controllers
 {
@@ -19,18 +20,29 @@ namespace UdemyCourse.Areas.Admin.Controllers
             List<Product> objProductList = _unitOfWork.Product.GetAll().ToList();
             return View(objProductList);
         }
-        public IActionResult Create()
+        public IActionResult Upsert(int? id)
         {
-            IEnumerable<SelectListItem> CategoryList = _unitOfWork.
+            ProductVM productVM = new()
+            {
+                CategoryList = _unitOfWork.
             Category.GetAll().Select(u => new SelectListItem
              {
                 Text = u.Name,
                 Value = u.Id.ToString(),
-             });
-            //ViewBag.CategoryList = CategoryList;
-            ViewData["CategoryList"] = CategoryList;
-
-            return View();
+                }),
+                Product = new Product()
+            };
+            if (id == null || id == 0)
+            {
+                //create
+                return View(productVM);
+        }
+            else
+            {
+                //update
+                productVM.Product = _unitOfWork.Product.Get(u => u.Id == id);
+                return View(productVM);
+            }
         }
 
         [HttpPost]
@@ -76,6 +88,14 @@ namespace UdemyCourse.Areas.Admin.Controllers
                 _unitOfWork.Save();
                 TempData["success"] = "Product updated successfully!";
                 return RedirectToAction("Index");
+            } else
+            {
+                productVM.CategoryList = _unitOfWork.
+                    Category.GetAll().Select(u => new SelectListItem
+                    {
+                        Text = u.Name,
+                        Value = u.Id.ToString(),
+                    });
             }
             return View();
         }
