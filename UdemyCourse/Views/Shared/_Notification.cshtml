@@ -1,8 +1,25 @@
 ﻿@if (TempData["success"] != null)
 {
+    <style>
+
+    .toast-top-center {
+    top: 12px;
+    margin: 0 auto;
+    left: 50 %;
+        margin - left: -150px;
+    }
+    </style>
+
+
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script>
+
+        toastr.options = {
+            positionClass: 'toast-top-center'
+        };
+
         toastr.success('@TempData["success"]')
     </script>
 }
