@@ -49,27 +49,19 @@
                                 <li class="dropdown-item">
                                     <a class="nav-link text-body" asp-area="Admin" asp-controller="Company" asp-action="Index">Companies</a>
                                 </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="dropdown-item">
+                                    <a class="nav-link text-body" asp-area="Identity" asp-page="/Account/Register">Create user</a>
+                                </li>
                             </ul>
                         </li>
                         }
-                        @if (HttpContextAccessor.HttpContext.Session.GetInt32(SD.SessionCart) != null)
-                        {
                             <li class="nav-item">
                                 <a class="nav-link text-body" asp-area="Customer" asp-controller="Cart" asp-action="Index">
-                                    <i class="bi bi-cart"></i> &nbsp;
-                                    (@HttpContextAccessor.HttpContext.Session.GetInt32(SD.SessionCart))
+                                    @await Component.InvokeAsync("ShoppingCart")
                                 </a>
                             </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-body" asp-area="Customer" asp-controller="Cart" asp-action="Index">
-                                    <i class="bi bi-cart"></i> &nbsp;
-                                    (0)
-                                </a>
-                            </li>
-                        }
+                        
                     </ul>
                     <partial name="_LoginPartial" />
                 </div> 
