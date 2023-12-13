@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Udemy.DataAccess.Data;
-using Udemy.DataAccess.Repository;
 using Udemy.DataAccess.Repository.IRepository;
 using Udemy.Models;
 using Udemy.Utilities;

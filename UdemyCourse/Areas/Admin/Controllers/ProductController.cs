@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
 using Udemy.DataAccess.Repository.IRepository;
 using Udemy.Models;
 using Udemy.Models.ViewModels;
+using Udemy.Utilities;
 
 namespace UdemyCourse.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -17,7 +19,7 @@ namespace UdemyCourse.Areas.Admin.Controllers
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
         }
-        public IActionResult Index() 
+        public IActionResult Index()
         {
             List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
             return View(objProductList);
@@ -58,32 +60,33 @@ namespace UdemyCourse.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 string wwwRootPath = _webHostEnvironment.WebRootPath;
-                if(file != null)
+                if (file != null)
                 {
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     string productPath = Path.Combine(wwwRootPath, @"images\product");
 
-                    if(!string.IsNullOrEmpty(productVM.Product.imageUrl)) 
-                    { 
+                    if (!string.IsNullOrEmpty(productVM.Product.imageUrl))
+                    {
                         var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.imageUrl.TrimStart('\\'));
 
-                        if(System.IO.File.Exists(oldImagePath))
+                        if (System.IO.File.Exists(oldImagePath))
                         {
                             System.IO.File.Delete(oldImagePath);
                         }
                     }
-                    using ( var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
                     {
                         file.CopyTo(fileStream);
                     }
                     productVM.Product.imageUrl = @"\images\product\" + fileName;
                 }
 
-                if(productVM.Product.Id == 0)
+                if (productVM.Product.Id == 0)
                 {
                     _unitOfWork.Product.Add(productVM.Product);
 
-                } else
+                }
+                else
                 {
                     _unitOfWork.Product.Update(productVM.Product);
                 }
@@ -91,7 +94,8 @@ namespace UdemyCourse.Areas.Admin.Controllers
                 _unitOfWork.Save();
                 TempData["success"] = "Product created successfully!";
                 return RedirectToAction("Index");
-            } else
+            }
+            else
             {
                 productVM.CategoryList = _unitOfWork.
                     Category.GetAll(includeProperties: "Category").Select(u => new SelectListItem
@@ -99,7 +103,7 @@ namespace UdemyCourse.Areas.Admin.Controllers
                         Text = u.Name,
                         Value = u.Id.ToString(),
                     });
-                }
+            }
             return View(productVM);
         }
 

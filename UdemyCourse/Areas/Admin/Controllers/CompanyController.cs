@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Udemy.DataAccess.Repository.IRepository;
 using Udemy.Models;
+using Udemy.Utilities;
 
 namespace UdemyCourse.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class CompanyController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -30,7 +32,7 @@ namespace UdemyCourse.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Upsert(Company company) 
+        public IActionResult Upsert(Company company)
         {
             if (company.Id == 0)
             {
@@ -38,7 +40,7 @@ namespace UdemyCourse.Areas.Admin.Controllers
                 TempData["success"] = "Company created successfully!";
             }
             else
-            { 
+            {
                 _unitOfWork.Company.Update(company);
                 TempData["success"] = "Company updated successfully!";
             }
