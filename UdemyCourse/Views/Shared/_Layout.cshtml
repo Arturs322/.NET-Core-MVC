@@ -26,12 +26,12 @@
                             <a class="nav-link text-body" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-body" asp-area="Customer" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-body" asp-area="Admin" asp-controller="Order" asp-action="Index">Manage Order</a>
                         </li>
 
                         @if (User.IsInRole(SD.Role_Admin)) {
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" style="text-decoration: none; color: #fff" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Content management
                             </a>
                             <ul class="dropdown-menu">
