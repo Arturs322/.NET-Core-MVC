@@ -9,7 +9,7 @@ function loadDataTable() {
         "ajax": { url: '/admin/user/getall' },
         "columns": [
             { "data": "name", "width": "15%" },
-            { "data": "email", "width": "15%" },
+            { "data": "email", "width": "15%" }, 
             { "data": "phoneNumber", "width": "15%" },
             { "data": "company.name", "width": "15%" },
             { "data": "role", "width": "15%" },
@@ -25,7 +25,7 @@ function loadDataTable() {
                              <a onclick=LockUnlock('${data.id}') class="btn btn-danger text-white" style="cursor:pointer; width:100px;">
                                     <i class="bi bi-lock-fill"></i>  Lock
                                 </a> 
-                                <a href="/admin/user/RoleManagment?userId=${data.id}" class="btn btn-danger text-white" style="cursor:pointer; width:150px;">
+                                <a href="/admin/user/permission?userId=${data.id}" class="btn btn-danger text-white" style="cursor:pointer; width:150px;">
                                      <i class="bi bi-pencil-square"></i> Permission
                                 </a>
                         </div>
@@ -37,7 +37,7 @@ function loadDataTable() {
                               <a onclick=LockUnlock('${data.id}') class="btn btn-success text-white" style="cursor:pointer; width:100px;">
                                     <i class="bi bi-unlock-fill"></i>  UnLock
                                 </a>
-                                <a href="/admin/user/RoleManagment?userId=${data.id}" class="btn btn-danger text-white" style="cursor:pointer; width:150px;">
+                                <a href="/admin/user/permission?userId=${data.id}" class="btn btn-danger text-white" style="cursor:pointer; width:150px;"
                                      <i class="bi bi-pencil-square"></i> Permission
                                 </a>
                         </div>

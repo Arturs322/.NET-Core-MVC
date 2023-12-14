@@ -1,0 +1,64 @@
+﻿@model UserManagerVM
+
+<form method="post">
+    <input asp-for="ApplicationUser.Id" hidden />
+    <div class="container">
+        <div class="col-10">
+            <div class="border p-3 my-4">
+                <div class="row pb-2">
+                    <h2 class="text-primary">Manage user role</h2>
+                </div>
+
+                <div asp-validation-summary="All"></div>
+                <div class="mb-3 row p-1">
+                    <label asp-for="ApplicationUser.Name" class="p-0"></label>
+                    <input asp-for="ApplicationUser.Name" class="form-control" />
+                    <span asp-validation-for="ApplicationUser.Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3 col-md-6">
+                    <select asp-for="ApplicationUser.Role" asp-items="@Model.RoleList" class="form-select" onchange="handleRoleChange()">
+                    </select>
+                </div>
+                @{
+                    var style = Model.ApplicationUser.Role == SD.Role_Company ? "block" : "none";
+                }
+                <div class="form-floating mb-3 col-md-6">
+                    <select asp-for="ApplicationUser.CompanyId" style="display:@style" asp-items="@Model.CompanyList" class="form-select">
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                            <button type="submit" class="btn btn-primary form-control">
+                                Update
+                            </button>
+                    </div>
+                    <div class="col-6">
+                        <a asp-controller="User" asp-action="Index" class="btn btn-secondary form-control">Back</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+            @section Scripts {
+                @{
+                 <partial name="_ValidationScriptsPartial" />
+                 }
+        <script>
+            $(document).ready(function () {
+            $('#ApplicationUser_Role').change(function () {
+                    var selection = $('#ApplicationUser_Role Option:Selected').text();
+                    if (selection == 'Company') {
+                        $('#ApplicationUser_CompanyId').show();
+                    }
+                    else {
+                        $('#ApplicationUser_CompanyId').hide();
+                    }
+                })
+            })
+        </script>
+            }

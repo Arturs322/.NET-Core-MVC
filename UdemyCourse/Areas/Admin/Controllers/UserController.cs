@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Udemy.DataAccess.Data;
 using Udemy.Models;
+using Udemy.Models.ViewModels;
 using Udemy.Utilities;
 
 namespace UdemyCourse.Areas.Admin.Controllers
@@ -12,10 +15,14 @@ namespace UdemyCourse.Areas.Admin.Controllers
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public UserController(ApplicationDbContext db)
+        public UserManagerVM UserManagerVM { get; private set; }
+
+        public UserController(ApplicationDbContext db, UserManager<IdentityUser> userManager)
         {
             _db = db;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -23,6 +30,60 @@ namespace UdemyCourse.Areas.Admin.Controllers
             return View();
         }
 
+        public IActionResult Permission(string userId)
+        {
+            string roleId = _db.UserRoles.FirstOrDefault(u => u.UserId == userId).RoleId;
+
+            UserManagerVM userManagerVM = new UserManagerVM()
+            {
+                ApplicationUser = _db.ApplicationUsers.Include(u => u.Company).FirstOrDefault(u => u.Id == userId),
+                CompanyList = _db.
+                Companies.Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString(),
+                }),
+                RoleList = _db.
+                Roles.Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Name,
+                }),
+            };
+
+            userManagerVM.ApplicationUser.Role = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
+
+            return View(userManagerVM);
+
+        }
+
+        [HttpPost]
+        public IActionResult Permission(UserManagerVM userManagerVM)
+        {
+            string roleId = _db.UserRoles.FirstOrDefault(u => u.UserId == userManagerVM.ApplicationUser.Id).RoleId;
+            string oldRole = _db.Roles.FirstOrDefault(u => u.Id == roleId).Name;
+
+            if (!(userManagerVM.ApplicationUser.Role == oldRole))
+            {
+                ApplicationUser applicationUser = _db.ApplicationUsers.FirstOrDefault(u => u.Id == userManagerVM.ApplicationUser.Id);
+                if (userManagerVM.ApplicationUser.Role == SD.Role_Company)
+                {
+                    applicationUser.CompanyId = userManagerVM.ApplicationUser.CompanyId;
+                }
+                if (oldRole == SD.Role_Company)
+                {
+                    applicationUser.CompanyId = null;
+                }
+
+                _db.SaveChanges();
+
+                _userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
+                _userManager.AddToRoleAsync(applicationUser, userManagerVM.ApplicationUser.Role).GetAwaiter().GetResult();
+            }
+
+            return RedirectToAction("Index");
+
+        }
 
 
         #region
