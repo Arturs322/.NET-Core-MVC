@@ -2,7 +2,6 @@
 
 <form method="post" enctype="multipart/form-data">
     <input asp-for="Product.Id" hidden />
-    <input asp-for="Product.imageUrl" hidden />
     <div class="row">
         <div class="col-10">
             <div class="border p-3 my-4">
@@ -57,10 +56,10 @@
                     </select>
                     <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
                 </div>
-                <div class="mb-3 row p-1">
+@*                 <div class="mb-3 row p-1">
                     <label asp-for="Product.imageUrl" class="p-0"></label>
                     <input type="file" name="file" class="form-control" />
-                </div>
+                </div> *@
                 <div class="row">
                     <div class="col-6">
                         @if (Model.Product.Id != 0)
@@ -84,9 +83,9 @@
             </div>
 
         </div>
-        <div class="col-2">
+@*         <div class="col-2">
             <img src="@Model.Product.imageUrl" width="100%" style="border-radius: 5px; border:1px solid #bbb9b9;"/>
-        </div>
+        </div> *@
     </div>
 </form>
 

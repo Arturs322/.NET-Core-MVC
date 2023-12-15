@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Udemy.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using Udemy.DataAccess.Data;
 namespace Udemy.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231215083117_AddTestProperty")]
+    partial class AddTestProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -442,7 +445,14 @@ namespace Udemy.DataAccess.Migrations
                     b.Property<double>("Price50")
                         .HasColumnType("float");
 
+                    b.Property<int>("TestProperty")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("imageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -464,7 +474,9 @@ namespace Udemy.DataAccess.Migrations
                             Price = 90.0,
                             Price100 = 80.0,
                             Price50 = 85.0,
-                            Title = "Fortune of Time"
+                            TestProperty = 0,
+                            Title = "Fortune of Time",
+                            imageUrl = ""
                         },
                         new
                         {
@@ -477,7 +489,9 @@ namespace Udemy.DataAccess.Migrations
                             Price = 30.0,
                             Price100 = 20.0,
                             Price50 = 25.0,
-                            Title = "Dark Skies"
+                            TestProperty = 0,
+                            Title = "Dark Skies",
+                            imageUrl = ""
                         },
                         new
                         {
@@ -490,7 +504,9 @@ namespace Udemy.DataAccess.Migrations
                             Price = 50.0,
                             Price100 = 35.0,
                             Price50 = 40.0,
-                            Title = "Vanish in the Sunset"
+                            TestProperty = 0,
+                            Title = "Vanish in the Sunset",
+                            imageUrl = ""
                         },
                         new
                         {
@@ -503,7 +519,9 @@ namespace Udemy.DataAccess.Migrations
                             Price = 65.0,
                             Price100 = 55.0,
                             Price50 = 60.0,
-                            Title = "Cotton Candy"
+                            TestProperty = 0,
+                            Title = "Cotton Candy",
+                            imageUrl = ""
                         },
                         new
                         {
@@ -516,7 +534,9 @@ namespace Udemy.DataAccess.Migrations
                             Price = 27.0,
                             Price100 = 20.0,
                             Price50 = 25.0,
-                            Title = "Rock in the Ocean"
+                            TestProperty = 0,
+                            Title = "Rock in the Ocean",
+                            imageUrl = ""
                         },
                         new
                         {
@@ -529,30 +549,10 @@ namespace Udemy.DataAccess.Migrations
                             Price = 23.0,
                             Price100 = 20.0,
                             Price50 = 22.0,
-                            Title = "Leaves and Wonders"
+                            TestProperty = 0,
+                            Title = "Leaves and Wonders",
+                            imageUrl = ""
                         });
-                });
-
-            modelBuilder.Entity("Udemy.Models.ProductImage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductImages");
                 });
 
             modelBuilder.Entity("Udemy.Models.ShoppingCart", b =>
@@ -706,17 +706,6 @@ namespace Udemy.DataAccess.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Udemy.Models.ProductImage", b =>
-                {
-                    b.HasOne("Udemy.Models.Product", "Product")
-                        .WithMany("ProductImages")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("Udemy.Models.ShoppingCart", b =>
                 {
                     b.HasOne("Udemy.Models.ApplicationUser", "ApplicationUser")
@@ -743,11 +732,6 @@ namespace Udemy.DataAccess.Migrations
                         .HasForeignKey("CompanyId");
 
                     b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("Udemy.Models.Product", b =>
-                {
-                    b.Navigation("ProductImages");
                 });
 #pragma warning restore 612, 618
         }

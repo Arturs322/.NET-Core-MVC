@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Udemy.DataAccess.Repository.IRepository
+﻿namespace Udemy.DataAccess.Repository.IRepository
 {
     public interface IUnitOfWork
     {
@@ -15,6 +9,7 @@ namespace Udemy.DataAccess.Repository.IRepository
         IApplicationUserRepository ApplicationUser { get; }
         IOrderHeaderRepository OrderHeader { get; }
         IOrderDetailRepository OrderDetail { get; }
+        IProductImageRepository ProductImage { get; }
 
         void Save();
     }

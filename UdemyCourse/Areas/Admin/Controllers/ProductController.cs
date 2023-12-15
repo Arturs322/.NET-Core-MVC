@@ -59,27 +59,27 @@ namespace UdemyCourse.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                string wwwRootPath = _webHostEnvironment.WebRootPath;
-                if (file != null)
-                {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    string productPath = Path.Combine(wwwRootPath, @"images\product");
+                //string wwwRootPath = _webHostEnvironment.WebRootPath;
+                //if (file != null)
+                //{
+                //    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                //    string productPath = Path.Combine(wwwRootPath, @"images\product");
 
-                    if (!string.IsNullOrEmpty(productVM.Product.imageUrl))
-                    {
-                        var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.imageUrl.TrimStart('\\'));
+                //    if (!string.IsNullOrEmpty(productVM.Product.imageUrl))
+                //    {
+                //        var oldImagePath = Path.Combine(wwwRootPath, productVM.Product.imageUrl.TrimStart('\\'));
 
-                        if (System.IO.File.Exists(oldImagePath))
-                        {
-                            System.IO.File.Delete(oldImagePath);
-                        }
-                    }
-                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
-                    {
-                        file.CopyTo(fileStream);
-                    }
-                    productVM.Product.imageUrl = @"\images\product\" + fileName;
-                }
+                //        if (System.IO.File.Exists(oldImagePath))
+                //        {
+                //            System.IO.File.Delete(oldImagePath);
+                //        }
+                //    }
+                //    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+                //    {
+                //        file.CopyTo(fileStream);
+                //    }
+                //    productVM.Product.imageUrl = @"\images\product\" + fileName;
+                //}
 
                 if (productVM.Product.Id == 0)
                 {
@@ -125,12 +125,12 @@ namespace UdemyCourse.Areas.Admin.Controllers
                 return Json(new { success = false, message = "Error while deleting" });
             }
 
-            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, productToBeDeleted.imageUrl.TrimStart('\\'));
+            //var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, productToBeDeleted.imageUrl.TrimStart('\\'));
 
-            if (System.IO.File.Exists(oldImagePath))
-            {
-                System.IO.File.Delete(oldImagePath);
-            }
+            //if (System.IO.File.Exists(oldImagePath))
+            //{
+            //    System.IO.File.Delete(oldImagePath);
+            //}
 
             _unitOfWork.Product.Remove(productToBeDeleted);
             _unitOfWork.Save();

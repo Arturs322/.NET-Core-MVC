@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Udemy.Models
 {
@@ -18,7 +12,7 @@ namespace Udemy.Models
         public string Title { get; set; }
         public string Description { get; set; }
         [Required]
-        public string ISBN {  get; set; }
+        public string ISBN { get; set; }
         [Required]
         public string Author { get; set; }
 
@@ -47,7 +41,6 @@ namespace Udemy.Models
         [ValidateNever]
         public Category Category { get; set; }
         [ValidateNever]
-        public string imageUrl { get; set; }
-
+        public List<ProductImage> ProductImages { get; set; }
     }
 }
