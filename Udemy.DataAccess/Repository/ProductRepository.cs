@@ -25,6 +25,7 @@ namespace Udemy.DataAccess.Repository
                 objFromDb.Description = obj.Description;
                 objFromDb.CategoryId = obj.CategoryId;
                 objFromDb.Author = obj.Author;
+                objFromDb.ProductImages = obj.ProductImages;
                 //if(obj.imageUrl != null)
                 //    {
                 //        objFromDb.imageUrl = obj.imageUrl;
